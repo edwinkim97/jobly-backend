@@ -11,6 +11,7 @@ const { BadRequestError } = require("../expressError");
  *      String of database column names which is to be supplied for SET command.
  *    values:
  *      Array of values to be used for the prepared statement.
+ * Throws BadRequestError when dataToUpdate is empty.
  * 
  * Example:
  *    > sqlForPartialUpdate(
