@@ -116,6 +116,16 @@ describe("GET /companies", function () {
     const resp = await request(app).get("/companies").query(filterArgs);
     expect(resp.statusCode).toEqual(400);
   });
+  test("fails: minEmployees > maxEmployees", async function () {
+    const filterArgs = { minEmployees: 5, maxEmployees: 3 };
+    const resp = await request(app).get("/companies").query(filterArgs);
+    expect(resp.statusCode).toEqual(400);
+  })
+  test("fails: invalid filter arguments", async function () {
+    const filterArgs = { handle: "c1" };
+    const resp = await request(app).get("/companies").query(filterArgs);
+    expect(resp.statusCode).toEqual(400);
+  })
 });
 
 test("fails: test next() handler", async function () {

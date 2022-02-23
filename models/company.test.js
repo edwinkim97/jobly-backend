@@ -85,6 +85,10 @@ describe("findAll", function () {
       },
     ]);
   });
+  // WORKING ON THIS TEST
+  test("works: filter (Case sensitive) ", async function () {
+    let companies = await Company.findAll({ name : "C1" });
+  })
 });
 
 /************************************** get */
