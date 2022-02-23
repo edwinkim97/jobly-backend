@@ -78,7 +78,7 @@ describe("findAll", function () {
       },
       {
         handle: "c3",
-        name: "Company 3",
+        name: "Company 22",
         description: "Desc3",
         numEmployees: 3,
         logoUrl: "http://c3.img",
@@ -133,7 +133,7 @@ describe("findAll", function () {
         logoUrl: "http://c2.img",
       }, {
         handle: "c3",
-        name: "Company 3",
+        name: "Company 22",
         description: "Desc3",
         numEmployees: 3,
         logoUrl: "http://c3.img",
@@ -164,6 +164,28 @@ describe("findAll", function () {
   test("works: filter maxEmployees small number should be empty", async function () {
     let companies = await Company.findAll({ maxEmployees: 0 });
     expect(companies).toEqual([]);
+  });
+  test("works: filter with same minEmployees and maxEmployees", async function () {
+    let companies = await Company.findAll({ minEmployees: 2, maxEmployees: 2});
+    expect(companies).toEqual([
+      {
+        handle: "c2",
+        name: "Company 2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      }]);
+  });
+  test("works: filter with name, minEmployees, maxEmployees", async function () {
+    let companies = await Company.findAll({ name: "2", minEmployees: 3, maxEmployees: 3});
+    expect(companies).toEqual([
+      {
+        handle: "c3",
+        name: "Company 22",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      }]);
   });
 });
 

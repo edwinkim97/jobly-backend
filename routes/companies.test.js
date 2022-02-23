@@ -87,7 +87,7 @@ describe("GET /companies", function () {
           },
           {
             handle: "c3",
-            name: "Company 3",
+            name: "Company 22",
             description: "Desc3",
             numEmployees: 3,
             logoUrl: "http://c3.img",
