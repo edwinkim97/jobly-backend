@@ -1,7 +1,7 @@
 {
   "name": "jobly-solution",
   "version": "2.0.0",
-  "description": "",
+  "description": "This is the Express backend for Jobly, version 2.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
