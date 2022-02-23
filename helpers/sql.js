@@ -1,6 +1,6 @@
 const { BadRequestError } = require("../expressError");
 
-/** Helper for preparing SQL query.
+/** Helper for preparing data for SQL UPDATE statement.
  * Arguments: 
  *    dataToUpdate:
  *      Object of model fields and values to update.
@@ -17,7 +17,7 @@ const { BadRequestError } = require("../expressError");
  *        {name: "newName", numEmployees: 0}, 
  *        {numEmployees: "num_employees"}
  *      )
- *    {setCols: "name=$1, num_employees=$2", values: ["newName", 0]}
+ *    {setCols: '"name"=$1, "num_employees"=$2', values: ["newName", 0]}
  */
 
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {

@@ -31,5 +31,13 @@
   },
   "devDependencies": {
     "supertest": "^6.1.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edwinkim97/express-jobly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/edwinkim97/express-jobly/issues"
+  },
+  "homepage": "https://github.com/edwinkim97/express-jobly#readme"
 }
