@@ -60,7 +60,34 @@ class Company {
       if (arg === "minEmployees") {
         return `num_employees>=$${idx + 1}`;
       }
+      if (arg === "maxEmployees") {
+        return `num_employees<=$${idx + 1}`;
+      }
+      if (arg === "name") {
+        return `${arg} ILIKE $${idx + 1}`;
+      }
+      return `${arg}=$${idx + 1}`;
     });
+
+    let whereClause;
+    console.log("WHERE CONDITIONS:", whereConditions);
+    if (whereConditions.length === 0){
+      whereClause = "";
+    }
+    else {
+      whereClause = "WHERE " + whereConditions.join(", ");
+    }
+    
+    const values = Object.values(filterArgs);
+    
+    console.log(`SELECT handle,
+    name,
+    description,
+    num_employees AS "numEmployees",
+    logo_url AS "logoUrl"
+    FROM companies
+    ${whereClause}
+    ORDER BY name`);
 
     const companiesRes = await db.query(
       `SELECT handle,
@@ -69,8 +96,9 @@ class Company {
                 num_employees AS "numEmployees",
                 logo_url AS "logoUrl"
            FROM companies
-           ${whereClause} // WHERE name=$1, num_employees>=$2, num_employees<=$3
+           ${whereClause}
            ORDER BY name`, values);
+    
     return companiesRes.rows;
   }
 
