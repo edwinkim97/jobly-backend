@@ -126,3 +126,35 @@ describe("ensureIsAdmin", function () {
     ensureIsAdmin(req, res, next);
   });
 });
+
+describe("ensureCorrectUserOrAdmin", function () {
+  test("works for admin", function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: "test", isAdmin: true } } };
+    const next = function (err) {
+      expect(err).toBeFalsy();
+    };
+    ensureCorrectUserOrAdmin(req, res, next);
+  });
+
+  test("works for non-admin", function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureCorrectUserOrAdmin(req, res, next);
+  });
+
+  test("unauth if no login", function () {
+    expect.assertions(1);
+    const req = {};
+    const res = { locals: {} };
+    const next = function (err) {
+      expect(err instanceof UnauthorizedError).toBeTruthy();
+    };
+    ensureCorrectUserOrAdmin(req, res, next);
+  });
+});
