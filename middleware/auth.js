@@ -5,7 +5,6 @@
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
 const { UnauthorizedError } = require("../expressError");
-const User = require("../models/user");
 
 
 /** Middleware: Authenticate user.
@@ -63,16 +62,10 @@ function ensureIsAdmin(req, res, next) {
  * admin.
  * 
  * If not, raises Unauthorized.
- * Raises NotFoundError if user doesn't exist.
+ * 
  */
 
-async function ensureCorrectUserOrAdmin(req, res, next) {
-  try {
-    const user = await User.get(req.params.username);
-  } catch (err) {
-    return next(err);
-  }
-
+function ensureSameUserOrAdmin(req, res, next) {
   try {
     if (!res.locals.user ||
       (res.locals.user.username !== req.params.username &&
@@ -90,5 +83,5 @@ module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureIsAdmin,
-  ensureCorrectUserOrAdmin,
+  ensureSameUserOrAdmin,
 };

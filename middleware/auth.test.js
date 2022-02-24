@@ -6,7 +6,7 @@ const {
   authenticateJWT,
   ensureLoggedIn,
   ensureIsAdmin,
-  ensureCorrectUserOrAdmin,
+  ensureSameUserOrAdmin,
 } = require("./auth");
 
 
@@ -128,7 +128,7 @@ describe("ensureIsAdmin", function () {
   });
 });
 
-describe("ensureCorrectUserOrAdmin", function () {
+describe("ensureSameUserOrAdmin", function () {
   test("works for admin", function () {
     expect.assertions(1);
     const req = { params: { username: "test2" } };
@@ -136,7 +136,7 @@ describe("ensureCorrectUserOrAdmin", function () {
     const next = function (err) {
       expect(err).toBeFalsy();
     };
-    ensureCorrectUserOrAdmin(req, res, next);
+    ensureSameUserOrAdmin(req, res, next);
   });
 
   test("works for correct user", function () {
@@ -146,7 +146,7 @@ describe("ensureCorrectUserOrAdmin", function () {
     const next = function (err) {
       expect(err).toBeFalsy();
     };
-    ensureCorrectUserOrAdmin(req, res, next);
+    ensureSameUserOrAdmin(req, res, next);
   });
 
   test("unauth for wrong user", function () {
@@ -156,7 +156,7 @@ describe("ensureCorrectUserOrAdmin", function () {
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
     };
-    ensureCorrectUserOrAdmin(req, res, next);
+    ensureSameUserOrAdmin(req, res, next);
   });
 
   test("unauth if no login", function () {
@@ -166,7 +166,7 @@ describe("ensureCorrectUserOrAdmin", function () {
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
     };
-    ensureCorrectUserOrAdmin(req, res, next);
+    ensureSameUserOrAdmin(req, res, next);
   });
 });
 
