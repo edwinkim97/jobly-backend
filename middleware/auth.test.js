@@ -95,7 +95,7 @@ describe("ensureLoggedIn", function () {
   });
 });
 
-
+// TODO: remote username for res locals user
 describe("ensureIsAdmin", function () {
   test("works for admin", function () {
     expect.assertions(1);
@@ -128,6 +128,7 @@ describe("ensureIsAdmin", function () {
   });
 });
 
+// TODO: for happy path, could have longer name to be more clear
 describe("ensureSameUserOrAdmin", function () {
   test("works for admin", function () {
     expect.assertions(1);
@@ -139,7 +140,7 @@ describe("ensureSameUserOrAdmin", function () {
     ensureSameUserOrAdmin(req, res, next);
   });
 
-  test("works for correct user", function () {
+  test("works for same user", function () {
     expect.assertions(1);
     const req = { params: { username: "test" } };
     const res = { locals: { user: { username: "test", isAdmin: false } } };
