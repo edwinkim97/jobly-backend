@@ -42,7 +42,6 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
-// TODO: change check to be isAdmin not true
 /** Middleware to use when they must be an admin.
  * 
  * If not, raises Unauthorized.
@@ -50,7 +49,7 @@ function ensureLoggedIn(req, res, next) {
 
 function ensureIsAdmin(req, res, next) {
   try {
-    if (!res.locals.user || res.locals.user.isAdmin === false) {
+    if (!res.locals.user || res.locals.user.isAdmin !== true) {
       throw new UnauthorizedError();
     }
     return next();
@@ -64,12 +63,11 @@ function ensureIsAdmin(req, res, next) {
  * 
  * If not, raises Unauthorized.
  */
-// TODO: Try to make the if easier to read, maybe don't use negation
 function ensureSameUserOrAdmin(req, res, next) {
   try {
     if (!res.locals.user ||
       (res.locals.user.username !== req.params.username &&
-        res.locals.user.isAdmin === false)) {
+        res.locals.user.isAdmin !== true)) {
       throw new UnauthorizedError();
     }
     return next();

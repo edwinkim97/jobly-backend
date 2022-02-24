@@ -95,12 +95,11 @@ describe("ensureLoggedIn", function () {
   });
 });
 
-// TODO: remote username for res locals user
 describe("ensureIsAdmin", function () {
   test("works for admin", function () {
     expect.assertions(1);
     const req = {};
-    const res = { locals: { user: { username: "admin", isAdmin: true } } };
+    const res = { locals: { user: { isAdmin: true } } };
     const next = function (err) {
       expect(err).toBeFalsy();
     };
@@ -110,7 +109,7 @@ describe("ensureIsAdmin", function () {
   test("unauth for non-admin", function () {
     expect.assertions(1);
     const req = {};
-    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    const res = { locals: { user: { isAdmin: false } } };
     const next = function (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
     };
@@ -128,9 +127,8 @@ describe("ensureIsAdmin", function () {
   });
 });
 
-// TODO: for happy path, could have longer name to be more clear
 describe("ensureSameUserOrAdmin", function () {
-  test("works for admin", function () {
+  test("works for admin, not same user", function () {
     expect.assertions(1);
     const req = { params: { username: "test2" } };
     const res = { locals: { user: { username: "test", isAdmin: true } } };
@@ -140,7 +138,7 @@ describe("ensureSameUserOrAdmin", function () {
     ensureSameUserOrAdmin(req, res, next);
   });
 
-  test("works for same user", function () {
+  test("works for same user, not admin", function () {
     expect.assertions(1);
     const req = { params: { username: "test" } };
     const res = { locals: { user: { username: "test", isAdmin: false } } };
