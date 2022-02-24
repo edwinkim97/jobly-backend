@@ -49,11 +49,14 @@ class Company {
     return company;
   }
 
-  /** Find all companies, optionally filtering
+  /** Find all companies
+   * Arguments (Optional): 
+   *  filterArgs = {name: NameToFilterOn, 
+   *                minEmployees: num_Employees minimum to filter on,
+   *                maxEmployees: num_Employees maximum to filter on}
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
-  // UPDATE DOC STRING to explain filterArgs
   static async findAll(filterArgs = {}) {
     const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
 
@@ -71,47 +74,47 @@ class Company {
   }
 
   /** Helper for Company.FindAll() optional filtering functionality
- * Arguments (Optional): 
- *  filterArgs = {name: NameToFilterOn, 
- *                minEmployees: num_Employees minimum to filter on,
- *                maxEmployess: num_Employees maximum to filter on}
- * 
- * Returns:
- *    whereClause: 
- *          String for WHERE conditions which is to be supplied to SQL query
- *    values:
- *          Array of values to be used for the prepared statement.
- * 
- * Example:
- *    > sqlForCompanyFilter({name: "Company 1", minEmployees: 2})
- *    { whereClause: "WHERE name ILIKE $1 and num_employees>=$2",
- *      values: ["%Company 1%", 2] }
- */
-static _sqlForCompanyFilter({ minEmployees, maxEmployees, name }) {
-  if (Number(minEmployees) > Number(maxEmployees)) {
-    throw new BadRequestError("minEmployees must be greater than maxEmployees");
-  }
-  const values = [];
-  const whereConditions = [];
-  if (name !== undefined) {
-    values.push(`%${name}%`);
-    whereConditions.push(`name ILIKE $${values.length}`);
-  }
-  if (minEmployees !== undefined) {
-    values.push(minEmployees);
-    whereConditions.push(`num_employees>=$${values.length}`);
-  }
-  if (maxEmployees !== undefined) {
-    values.push(maxEmployees);
-    whereConditions.push(`num_employees<=$${values.length}`);
-  }
-  
-  const whereClause = whereConditions.length === 0 ? 
-    "" : 
-    "WHERE " + whereConditions.join(" AND ");
+   * Arguments (Optional): 
+   *  filterArgs = {name: NameToFilterOn, 
+   *                minEmployees: num_Employees minimum to filter on,
+   *                maxEmployees: num_Employees maximum to filter on}
+   * 
+   * Returns:
+   *    whereClause: 
+   *          String for WHERE conditions which is to be supplied to SQL query
+   *    values:
+   *          Array of values to be used for the prepared statement.
+   * 
+   * Example:
+   *    > sqlForCompanyFilter({name: "Company 1", minEmployees: 2})
+   *    { whereClause: "WHERE name ILIKE $1 and num_employees>=$2",
+   *      values: ["%Company 1%", 2] }
+   */
+  static _sqlForCompanyFilter({ minEmployees, maxEmployees, name }) {
+    if (Number(minEmployees) > Number(maxEmployees)) {
+      throw new BadRequestError("minEmployees must be greater than maxEmployees");
+    }
+    const values = [];
+    const whereConditions = [];
+    if (name !== undefined) {
+      values.push(`%${name}%`);
+      whereConditions.push(`name ILIKE $${values.length}`);
+    }
+    if (minEmployees !== undefined) {
+      values.push(minEmployees);
+      whereConditions.push(`num_employees>=$${values.length}`);
+    }
+    if (maxEmployees !== undefined) {
+      values.push(maxEmployees);
+      whereConditions.push(`num_employees<=$${values.length}`);
+    }
 
-  return { whereClause, values };
-}
+    const whereClause = whereConditions.length === 0 ?
+      "" :
+      "WHERE " + whereConditions.join(" AND ");
+
+    return { whereClause, values };
+  }
 
   /** Given a company handle, return data about company.
    *
