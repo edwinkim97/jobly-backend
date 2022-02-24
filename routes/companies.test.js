@@ -107,7 +107,7 @@ describe("GET /companies", function () {
     });
   });
   test("works: filter", async function () {
-    const filterArgs = { name: "Company 1" };
+    const filterArgs = { name: "Company 1", minEmployees: 1, maxEmployees: 1 };
     const resp = await request(app).get("/companies").query(filterArgs);
     expect(resp.body).toEqual({
       companies:
