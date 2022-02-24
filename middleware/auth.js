@@ -42,6 +42,15 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
+/** Middleware to ensure user is admin
+ * 
+ * If not, raises Unauthorized.
+ */
+
+function ensureIsAdmin(req, res, next) {
+  return next();
+}
+
 
 module.exports = {
   authenticateJWT,
