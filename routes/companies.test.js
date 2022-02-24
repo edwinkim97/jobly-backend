@@ -49,6 +49,13 @@ describe("POST /companies", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
+  test("fail for not logged in", async function () {
+    const resp = await request(app)
+      .post("/companies")
+      .send(newCompany)
+    expect(resp.statusCode).toEqual(401);
+  });
+
   test("bad request with missing data", async function () {
     const resp = await request(app)
       .post("/companies")
@@ -75,7 +82,7 @@ describe("POST /companies", function () {
 /************************************** GET /companies */
 
 describe("GET /companies", function () {
-  test("ok for anon", async function () {
+  test("works for anon", async function () {
     const resp = await request(app).get("/companies");
     expect(resp.body).toEqual({
       companies:

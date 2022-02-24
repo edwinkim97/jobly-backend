@@ -107,7 +107,7 @@ describe("ensureIsAdmin", function () {
     ensureIsAdmin(req, res, next);
   });
 
-  test("works for non-admin", function () {
+  test("unauth for non-admin", function () {
     expect.assertions(1);
     const req = {};
     const res = { locals: { user: { username: "test", isAdmin: false } } };

@@ -42,7 +42,7 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
-/** Middleware to ensure user isAdmin = true
+/** Middleware to use when they must be an admin.
  * 
  * If not, raises Unauthorized.
  */
@@ -58,11 +58,10 @@ function ensureIsAdmin(req, res, next) {
   }
 }
 
-/** Middleware to ensure requested user matches logged in user or logged in as 
- * admin.
+/** Middleware to use when they must be the same as the requested user or be an 
+ * admin. 
  * 
  * If not, raises Unauthorized.
- * 
  */
 
 function ensureSameUserOrAdmin(req, res, next) {

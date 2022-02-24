@@ -64,7 +64,7 @@ describe("register", function () {
   };
 
   test("works", async function () {
-    let user = await User.register({
+    const user = await User.register({
       ...newUser,
       password: "password",
     });
@@ -76,7 +76,7 @@ describe("register", function () {
   });
 
   test("works: adds admin", async function () {
-    let user = await User.register({
+    const user = await User.register({
       ...newUser,
       password: "password",
       isAdmin: true,
@@ -133,7 +133,7 @@ describe("findAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    let user = await User.get("u1");
+    const user = await User.get("u1");
     expect(user).toEqual({
       username: "u1",
       firstName: "U1F",
@@ -164,7 +164,7 @@ describe("update", function () {
   };
 
   test("works", async function () {
-    let job = await User.update("u1", updateData);
+    const job = await User.update("u1", updateData);
     expect(job).toEqual({
       username: "u1",
       ...updateData,
@@ -172,7 +172,7 @@ describe("update", function () {
   });
 
   test("works: set password", async function () {
-    let job = await User.update("u1", {
+    const job = await User.update("u1", {
       password: "new",
     });
     expect(job).toEqual({
@@ -215,7 +215,7 @@ describe("remove", function () {
   test("works", async function () {
     await User.remove("u1");
     const res = await db.query(
-        "SELECT * FROM users WHERE username='u1'");
+      "SELECT * FROM users WHERE username='u1'");
     expect(res.rows.length).toEqual(0);
   });
 

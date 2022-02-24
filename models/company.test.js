@@ -27,7 +27,7 @@ describe("create", function () {
   };
 
   test("works", async function () {
-    let company = await Company.create(newCompany);
+    const company = await Company.create(newCompany);
     expect(company).toEqual(newCompany);
 
     const result = await db.query(
@@ -60,7 +60,7 @@ describe("create", function () {
 // USE const instead of let
 describe("findAll", function () {
   test("works: no filter", async function () {
-    let companies = await Company.findAll();
+    const companies = await Company.findAll();
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -86,7 +86,7 @@ describe("findAll", function () {
     ]);
   });
   test("works: filter name (Case sensitive) ", async function () {
-    let companies = await Company.findAll({ name: "Company 1" });
+    const companies = await Company.findAll({ name: "Company 1" });
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -97,7 +97,7 @@ describe("findAll", function () {
       }]);
   });
   test("works: filter name (Case insensitive) ", async function () {
-    let companies = await Company.findAll({ name: "company 1" });
+    const companies = await Company.findAll({ name: "company 1" });
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -108,7 +108,7 @@ describe("findAll", function () {
       }]);
   });
   test("works: filter name substring", async function () {
-    let companies = await Company.findAll({ name: "any 1" });
+    const companies = await Company.findAll({ name: "any 1" });
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -119,11 +119,11 @@ describe("findAll", function () {
       }]);
   });
   test("works: filter name doesn't exist should be empty", async function () {
-    let companies = await Company.findAll({ name: "DOES NOT MATCH" });
+    const companies = await Company.findAll({ name: "DOES NOT MATCH" });
     expect(companies).toEqual([]);
   });
   test("works: filter minEmployees", async function () {
-    let companies = await Company.findAll({ minEmployees: 2 });
+    const companies = await Company.findAll({ minEmployees: 2 });
     expect(companies).toEqual([
       {
         handle: "c2",
@@ -140,11 +140,11 @@ describe("findAll", function () {
       }]);
   });
   test("works: filter minEmployees large number should be empty", async function () {
-    let companies = await Company.findAll({ minEmployees: 999999 });
+    const companies = await Company.findAll({ minEmployees: 999999 });
     expect(companies).toEqual([]);
   });
   test("works: filter maxEmployees", async function () {
-    let companies = await Company.findAll({ maxEmployees: 2 });
+    const companies = await Company.findAll({ maxEmployees: 2 });
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -162,11 +162,11 @@ describe("findAll", function () {
       }]);
   });
   test("works: filter maxEmployees small number should be empty", async function () {
-    let companies = await Company.findAll({ maxEmployees: 0 });
+    const companies = await Company.findAll({ maxEmployees: 0 });
     expect(companies).toEqual([]);
   });
   test("works: filter with same minEmployees and maxEmployees", async function () {
-    let companies = await Company.findAll({ minEmployees: 2, maxEmployees: 2});
+    const companies = await Company.findAll({ minEmployees: 2, maxEmployees: 2 });
     expect(companies).toEqual([
       {
         handle: "c2",
@@ -177,7 +177,7 @@ describe("findAll", function () {
       }]);
   });
   test("works: filter with name, minEmployees, maxEmployees", async function () {
-    let companies = await Company.findAll({ name: "2", minEmployees: 3, maxEmployees: 3});
+    const companies = await Company.findAll({ name: "2", minEmployees: 3, maxEmployees: 3 });
     expect(companies).toEqual([
       {
         handle: "c3",
@@ -193,30 +193,30 @@ describe("findAll", function () {
 
 describe("sqlForCompanyFilter", function () {
   test("works properly", function () {
-      const filterArgs = { name: "Company 1", minEmployees: 2, description: "" };
-      const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
+    const filterArgs = { name: "Company 1", minEmployees: 2, description: "" };
+    const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
 
-      expect(whereClause).toEqual(
-          "WHERE name ILIKE $1 AND num_employees>=$2");
-      expect(values).toEqual(["%Company 1%", 2]);
+    expect(whereClause).toEqual(
+      "WHERE name ILIKE $1 AND num_employees>=$2");
+    expect(values).toEqual(["%Company 1%", 2]);
   });
 
   test("no data", function () {
-      const filterArgs = {};
-      const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
+    const filterArgs = {};
+    const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
 
-      expect(whereClause).toEqual("");
-      expect(values).toEqual([]);
+    expect(whereClause).toEqual("");
+    expect(values).toEqual([]);
   });
 
   test("fails minEmployees greater than maxEmployees", function () {
-      const filterArgs = {minEmployees: "23", maxEmployees: "2"};
-      try {
-        Company._sqlForCompanyFilter(filterArgs);
-        fail();
-      } catch (err) {
-        expect(err instanceof BadRequestError).toBeTruthy()
-      }
+    const filterArgs = { minEmployees: "23", maxEmployees: "2" };
+    try {
+      Company._sqlForCompanyFilter(filterArgs);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy()
+    }
   });
 });
 
@@ -224,7 +224,7 @@ describe("sqlForCompanyFilter", function () {
 
 describe("get", function () {
   test("works", async function () {
-    let company = await Company.get("c1");
+    const company = await Company.get("c1");
     expect(company).toEqual({
       handle: "c1",
       name: "Company 1",
@@ -255,7 +255,7 @@ describe("update", function () {
   };
 
   test("works", async function () {
-    let company = await Company.update("c1", updateData);
+    const company = await Company.update("c1", updateData);
     expect(company).toEqual({
       handle: "c1",
       ...updateData,
@@ -282,7 +282,7 @@ describe("update", function () {
       logoUrl: null,
     };
 
-    let company = await Company.update("c1", updateDataSetNulls);
+    const company = await Company.update("c1", updateDataSetNulls);
     expect(company).toEqual({
       handle: "c1",
       ...updateDataSetNulls,
