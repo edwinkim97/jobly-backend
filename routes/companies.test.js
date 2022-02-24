@@ -40,6 +40,17 @@ describe("POST /companies", function () {
     });
   });
 
+  test("fail for non-admin users", async function () {
+    const resp = await request(app)
+      .post("/companies")
+      .send(newCompany)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+    expect(resp.body).toEqual({
+      company: newCompany,
+    });
+  });
+
   test("bad request with missing data", async function () {
     const resp = await request(app)
       .post("/companies")
