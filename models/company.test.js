@@ -189,6 +189,37 @@ describe("findAll", function () {
   });
 });
 
+/************************************** _sqlForCompanyFilter */
+
+describe("sqlForCompanyFilter", function () {
+  test("works properly", function () {
+      const filterArgs = { name: "Company 1", minEmployees: 2, description: "" };
+      const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
+
+      expect(whereClause).toEqual(
+          "WHERE name ILIKE $1 AND num_employees>=$2");
+      expect(values).toEqual(["%Company 1%", 2]);
+  });
+
+  test("no data", function () {
+      const filterArgs = {};
+      const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
+
+      expect(whereClause).toEqual("");
+      expect(values).toEqual([]);
+  });
+
+  test("fails minEmployees greater than maxEmployees", function () {
+      const filterArgs = {minEmployees: "23", maxEmployees: "2"};
+      try {
+        Company._sqlForCompanyFilter(filterArgs);
+        fail();
+      } catch (err) {
+        expect(err instanceof BadRequestError).toBeTruthy()
+      }
+  });
+});
+
 /************************************** get */
 
 describe("get", function () {

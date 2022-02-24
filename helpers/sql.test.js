@@ -1,7 +1,7 @@
 "use strict";
 
 const { BadRequestError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForCompanyFilter } = require("./sql")
+const { sqlForPartialUpdate } = require("./sql")
 
 describe("sqlForPartialUpdate", function () {
     test("works properly", function () {
@@ -24,24 +24,5 @@ describe("sqlForPartialUpdate", function () {
         } catch (err) {
             expect(err instanceof BadRequestError).toBeTruthy();
         };
-    });
-});
-
-describe("sqlForCompanyFilter", function () {
-    test("works properly", function () {
-        const filterArgs = { name: "Company 1", minEmployees: 2, description: "" };
-        const { whereClause, values } = sqlForCompanyFilter(filterArgs);
-
-        expect(whereClause).toEqual(
-            "WHERE name ILIKE $1 AND num_employees>=$2 AND description=$3");
-        expect(values).toEqual(["%Company 1%", 2, ""]);
-    });
-
-    test("no data", function () {
-        const filterArgs = {};
-        const { whereClause, values } = sqlForCompanyFilter(filterArgs);
-
-        expect(whereClause).toEqual("");
-        expect(values).toEqual([]);
     });
 });
