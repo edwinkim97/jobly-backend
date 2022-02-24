@@ -25,4 +25,4 @@ describe("sqlForPartialUpdate", function () {
             expect(err instanceof BadRequestError).toBeTruthy();
         };
     });
-})
+});

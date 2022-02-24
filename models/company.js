@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForCompanyFilter } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -55,33 +55,7 @@ class Company {
    * */
 
   static async findAll(filterArgs = {}) {
-    const filterKeys = Object.keys(filterArgs);
-    const values = [];
-    const whereConditions = filterKeys.map((arg, idx) => {
-      if (arg === "minEmployees") {
-        values.push(filterArgs[arg]);
-        return `num_employees>=$${idx + 1}`;
-      }
-      if (arg === "maxEmployees") {
-        values.push(filterArgs[arg]);
-        return `num_employees<=$${idx + 1}`;
-      }
-      if (arg === "name") {
-        values.push(`%${filterArgs[arg]}%`);
-        return `${arg} ILIKE $${idx + 1}`;
-      }
-      values.push(filterArgs[arg]);
-      return `${arg}=$${idx + 1}`;
-    });
-
-    let whereClause;
-    console.log("WHERE CONDITIONS:", whereConditions);
-    if (whereConditions.length === 0) {
-      whereClause = "";
-    }
-    else {
-      whereClause = "WHERE " + whereConditions.join("AND ");
-    }
+    const { whereClause, values } = sqlForCompanyFilter(filterArgs);
 
     const companiesRes = await db.query(
       `SELECT handle,
