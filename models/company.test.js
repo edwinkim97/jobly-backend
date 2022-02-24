@@ -57,7 +57,7 @@ describe("create", function () {
 });
 
 /************************************** findAll */
-
+// USE const instead of let
 describe("findAll", function () {
   test("works: no filter", async function () {
     let companies = await Company.findAll();

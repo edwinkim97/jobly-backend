@@ -111,6 +111,7 @@ describe("GET /companies", function () {
         ]
     });
   });
+  // TEST for string number from URL query string
   test("fails: filter wrong type", async function () {
     const filterArgs = { name: 1, minEmployees: "5", maxEmployees: "Ten" };
     const resp = await request(app).get("/companies").query(filterArgs);

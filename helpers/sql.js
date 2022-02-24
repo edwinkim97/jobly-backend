@@ -53,7 +53,9 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
  *    { whereClause: "WHERE name ILIKE $1 and num_employees>=$2",
  *      values: ["%Company 1%", 2] }
  */
-
+// Add to company model
+// For whereConditions, can use values.length instead of whereConditions.length
+// Consider moving to company models folder and using a _ to show its helper function
 function sqlForCompanyFilter({ minEmployees, maxEmployees, name, ...otherArgs }) {
   const values = [];
   const whereConditions = [];
@@ -69,11 +71,12 @@ function sqlForCompanyFilter({ minEmployees, maxEmployees, name, ...otherArgs })
     values.push(maxEmployees);
     whereConditions.push(`num_employees<=$${whereConditions.length + 1}`);
   }
+  // We don't want to allow for undocumented filtering, so get rid of this loop
   for (const [arg, val] of Object.entries(otherArgs)) {
     values.push(val);
     whereConditions.push(`${arg}=$${whereConditions.length + 1}`);
   }
-
+  // Consider using a ternary expression here
   let whereClause;
   if (whereConditions.length === 0) {
     whereClause = "";

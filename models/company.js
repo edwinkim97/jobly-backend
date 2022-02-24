@@ -53,7 +53,7 @@ class Company {
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
-
+  // UPDATE DOC STRING to explain filterArgs
   static async findAll(filterArgs = {}) {
     const { whereClause, values } = sqlForCompanyFilter(filterArgs);
 
