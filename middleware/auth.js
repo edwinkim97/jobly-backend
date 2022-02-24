@@ -65,7 +65,16 @@ function ensureIsAdmin(req, res, next) {
  */
 
 function ensureCorrectUserOrAdmin(req, res, next) {
-  return next();
+  try {
+    if (!res.locals.user || 
+      (res.locals.user.username !== req.params.username && 
+        res.locals.user.isAdmin === false)) {
+      throw new UnauthorizedError();
+    }
+    return next();
+  } catch (err) {
+    return next(err);
+  }
 }
 
 
@@ -73,4 +82,5 @@ module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureIsAdmin,
+  ensureCorrectUserOrAdmin,
 };
