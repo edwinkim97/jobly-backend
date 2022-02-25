@@ -211,13 +211,13 @@ describe("update", function () {
     const result = await db.query(
       `SELECT title, salary, equity
              FROM jobs
-             WHERE title = 'computer programmer'`);
+             WHERE id = ${jobId}`);
     expect(result.rows).toEqual([updateDataSetNulls]);
   });
 
   test("not found if no such job", async function () {
     try {
-      await Job.update("nope", updateData);
+      await Job.update(-999, updateData);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
@@ -240,15 +240,17 @@ describe("update", function () {
 
 describe("remove", function () {
   test("works", async function () {
-    await Job.remove(1);
+    const jobId = (await db.query(`SELECT id FROM jobs 
+                              WHERE title = 'computer programmer'`)).rows[0].id;
+    await Job.remove(jobId);
     const res = await db.query(
-      "SELECT id FROM jobs WHERE id=1");
+      `SELECT id FROM jobs WHERE id=${jobId}`);
     expect(res.rows.length).toEqual(0);
   });
 
   test("not found if no such job", async function () {
     try {
-      await Job.remove("nope");
+      await Job.remove(-999);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
