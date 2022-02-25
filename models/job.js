@@ -17,28 +17,34 @@ class Job {
    * */
 
   static async create({ title, salary, equity, company_handle }) {
+    if (Number(equity) >= 1) {
+      throw new BadRequestError();
+    }
+    if (Number(salary) < 0) {
+      throw new BadRequestError();
+    }
+    const existsCheck = await db.query(
+      `SELECT handle
+           FROM companies
+           WHERE handle = $1`,
+      [company_handle]);
+    if (existsCheck.rows.length === 0)
+      throw new BadRequestError(`Company does not exist: ${company_handle}`);
+
 
     const result = await db.query(
-      `INSERT INTO companies(
-          handle,
-          name,
-          description,
-          num_employees,
-          logo_url)
+      `INSERT INTO jobs(
+          title,
+          salary,
+          equity,
+          company_handle)
            VALUES
-             ($1, $2, $3, $4, $5)
-           RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`,
-      [
-        handle,
-        name,
-        description,
-        numEmployees,
-        logoUrl,
-      ],
-    );
-    const company = result.rows[0];
+             ($1, $2, $3, $4)
+           RETURNING id, title, salary, equity, company_handle AS "companyHandle"`,
+      [title, salary, equity, company_handle]);
+    const job = result.rows[0];
 
-    return company;
+    return job;
   }
 
   /** Find all companies

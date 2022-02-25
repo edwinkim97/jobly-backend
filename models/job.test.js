@@ -21,17 +21,23 @@ describe("create", function () {
   const newJob = {
     title: "Unique Job",
     salary: 1,
-    equity: 0.05,
+    equity: "0.05",
     company_handle: "c1",
   };
 
   test("works", async function () {
     const job = await Job.create(newJob);
     const jobId = job.id;
-    expect(job).toEqual({ id: jobId, ...newJob });
+    expect(job).toEqual({
+      id: jobId,
+      title: "Unique Job",
+      salary: 1,
+      equity: "0.05",
+      companyHandle: "c1"
+    });
 
     const result = await db.query(
-      `SELECT title, salary, equity, company_handle,
+      `SELECT id, title, salary, equity, company_handle AS "companyHandle"
              FROM jobs
              WHERE id = ${jobId}`);
     expect(result.rows).toEqual([job]);
@@ -66,6 +72,7 @@ describe("create", function () {
       await Job.create(badJob);
       fail();
     } catch (err) {
+      console.log(err);
       expect(err instanceof BadRequestError).toBeTruthy();
     }
   });
