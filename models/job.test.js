@@ -85,25 +85,25 @@ describe("findAll", function () {
     const jobs = await Job.findAll();
     expect(jobs).toEqual([
       {
-        id: 1,
+        id: expect.any(Number),
         title: 'computer programmer',
         salary: 200000,
-        equity: 0,
-        company_handle: "c1"
+        equity: "0",
+        companyHandle: "c1"
       },
       {
-        id: 2,
+        id: expect.any(Number),
         title: 'mechanical engineer',
         salary: 100000,
-        equity: 0.3,
-        company_handle: "c2"
+        equity: "0.3",
+        companyHandle: "c2"
       },
       {
-        id: 3,
+        id: expect.any(Number),
         title: 'musician',
         salary: null,
         equity: null,
-        company_handle: "c2"
+        companyHandle: "c2"
       },
     ]);
   });
@@ -144,19 +144,21 @@ describe("findAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    const job = await job.get(1);
+    const id = (await db.query(`SELECT id FROM jobs 
+                              WHERE title = 'computer programmer'`)).rows[0].id;
+    const job = await Job.get(id);
     expect(job).toEqual({
-      id: 1,
+      id: id,
       title: 'computer programmer',
       salary: 200000,
-      equity: 0,
-      company_handle: "c1"
+      equity: "0",
+      companyHandle: "c1"
     });
   });
 
   test("not found if no such company", async function () {
     try {
-      await Job.get("nope");
+      await Job.get(-999);
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();

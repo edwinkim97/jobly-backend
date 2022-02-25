@@ -47,28 +47,25 @@ class Job {
     return job;
   }
 
-  /** Find all companies
+  /** Find all jobs
    * Arguments (Optional): 
-   *  filterArgs = {name: NameToFilterOn, 
-   *                minEmployees: num_Employees minimum to filter on,
-   *                maxEmployees: num_Employees maximum to filter on}
+   *  filterArgs = {}
    *
-   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * Returns [{ id, title, salary, equity, companyHandle }, ...]
    * */
-  static async findAll(filterArgs = {}) {
-    const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
+  static async findAll() {
+    //const { whereClause, values } = Company._sqlForCompanyFilter(filterArgs);
 
-    const companiesRes = await db.query(
-      `SELECT handle,
-                name,
-                description,
-                num_employees AS "numEmployees",
-                logo_url AS "logoUrl"
-           FROM companies
-           ${whereClause}
-           ORDER BY name`, values);
+    const jobsRes = await db.query(
+      `SELECT id,
+                title,
+                salary,
+                equity,
+                company_handle AS "companyHandle"
+           FROM jobs
+           ORDER BY id`);
 
-    return companiesRes.rows;
+    return jobsRes.rows;
   }
 
   /** Helper for Company.FindAll() optional filtering functionality
@@ -114,30 +111,29 @@ class Job {
     return { whereClause, values };
   }
 
-  /** Given a company handle, return data about company.
+  /** Given a job ID, return data about job.
    *
-   * Returns { handle, name, description, numEmployees, logoUrl, jobs }
-   *   where jobs is [{ id, title, salary, equity, companyHandle }, ...]
+   * Returns { id, title, salary, equity, companyHandle }
    *
    * Throws NotFoundError if not found.
    **/
 
-  static async get(handle) {
-    const companyRes = await db.query(
-      `SELECT handle,
-                name,
-                description,
-                num_employees AS "numEmployees",
-                logo_url AS "logoUrl"
-           FROM companies
-           WHERE handle = $1`,
-      [handle]);
+  static async get(id) {
+    const jobRes = await db.query(
+      `SELECT id,
+                title,
+                salary,
+                equity,
+                company_handle AS "companyHandle"
+           FROM jobs
+           WHERE id = $1`,
+      [id]);
 
-    const company = companyRes.rows[0];
+    const job = jobRes.rows[0];
 
-    if (!company) throw new NotFoundError(`No company: ${handle}`);
+    if (!job) throw new NotFoundError(`No job: ${id}`);
 
-    return company;
+    return job;
   }
 
   /** Update company data with `data`.
