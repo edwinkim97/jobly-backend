@@ -16,7 +16,7 @@ class Job {
    * Throws BadRequestError if job already in database.
    * */
 
-  static async create({ title, salary, equity, company_handle }) {
+  static async create({ title, salary, equity, companyHandle }) {
     if (Number(equity) >= 1) {
       throw new BadRequestError();
     }
@@ -27,9 +27,9 @@ class Job {
       `SELECT handle
            FROM companies
            WHERE handle = $1`,
-      [company_handle]);
+      [companyHandle]);
     if (existsCheck.rows.length === 0)
-      throw new BadRequestError(`Company does not exist: ${company_handle}`);
+      throw new BadRequestError(`Company does not exist: ${companyHandle}`);
 
 
     const result = await db.query(
@@ -41,7 +41,7 @@ class Job {
            VALUES
              ($1, $2, $3, $4)
            RETURNING id, title, salary, equity, company_handle AS "companyHandle"`,
-      [title, salary, equity, company_handle]);
+      [title, salary, equity, companyHandle]);
     const job = result.rows[0];
 
     return job;
@@ -136,36 +136,31 @@ class Job {
     return job;
   }
 
-  /** Update company data with `data`.
+  /** Update job data with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain all the
    * fields; this only changes provided ones.
    *
-   * Data can include: {name, description, numEmployees, logoUrl}
+   * Data can include: {title, salary, equity}
    *
-   * Returns {handle, name, description, numEmployees, logoUrl}
+   * Returns { id, title, salary, equity, companyHandle }
    *
    * Throws NotFoundError if not found.
    */
 
-  static async update(handle, data) {
-    const { setCols, values } = sqlForPartialUpdate(
-      data,
-      {
-        numEmployees: "num_employees",
-        logoUrl: "logo_url",
-      });
-    const handleVarIdx = "$" + (values.length + 1);
+  static async update(id, data) {
+    const { setCols, values } = sqlForPartialUpdate(data, {});
+    const jobIdIdx = "$" + (values.length + 1);
 
     const querySql = `
-      UPDATE companies
+      UPDATE jobs
       SET ${setCols}
-        WHERE handle = ${handleVarIdx}
-        RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`;
-    const result = await db.query(querySql, [...values, handle]);
+        WHERE id = ${jobIdIdx}
+        RETURNING id, title, salary, equity, company_handle AS "companyHandle"`;
+    const result = await db.query(querySql, [...values, id]);
     const company = result.rows[0];
 
-    if (!company) throw new NotFoundError(`No company: ${handle}`);
+    if (!company) throw new NotFoundError(`No job: ${id}`);
 
     return company;
   }

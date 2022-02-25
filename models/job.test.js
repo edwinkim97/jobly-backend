@@ -22,7 +22,7 @@ describe("create", function () {
     title: "Unique Job",
     salary: 1,
     equity: "0.05",
-    company_handle: "c1",
+    companyHandle: "c1",
   };
 
   test("works", async function () {
@@ -67,7 +67,7 @@ describe("create", function () {
 
   test("bad request with invalid company", async function () {
     const badJob = { ...newJob };
-    badJob.company_handle = "NOT A REAL COMPANY";
+    badJob.companyHandle = "NOT A REAL COMPANY";
     try {
       await Job.create(badJob);
       fail();
@@ -172,42 +172,46 @@ describe("update", function () {
   const updateData = {
     title: "NewJob",
     salary: 999,
-    equity: .1,
+    equity: "0.1",
   };
 
   test("works", async function () {
-    const job = await Job.update(1, updateData);
+    const jobId = (await db.query(`SELECT id FROM jobs 
+                              WHERE title = 'computer programmer'`)).rows[0].id;
+    const job = await Job.update(jobId, updateData);
     expect(job).toEqual({
-      id: 1,
+      id: jobId,
       ...updateData,
-      company_handle: "c1",
+      companyHandle: "c1",
     });
 
     const result = await db.query(
       `SELECT title, salary, equity
              FROM jobs
-             WHERE id = 1`);
+             WHERE id = ${jobId}`);
     expect(result.rows).toEqual([updateData]);
   });
 
   test("works: null fields", async function () {
+    const jobId = (await db.query(`SELECT id FROM jobs 
+                              WHERE title = 'computer programmer'`)).rows[0].id;
     const updateDataSetNulls = {
       title: "NewJob",
       salary: null,
       equity: null,
     };
 
-    const job = await Job.update("1", updateDataSetNulls);
+    const job = await Job.update(jobId, updateDataSetNulls);
     expect(job).toEqual({
-      id: 1,
+      id: jobId,
       ...updateDataSetNulls,
-      company_handle: "c1",
+      companyHandle: "c1",
     });
 
     const result = await db.query(
       `SELECT title, salary, equity
              FROM jobs
-             WHERE id = 1`);
+             WHERE title = 'computer programmer'`);
     expect(result.rows).toEqual([updateDataSetNulls]);
   });
 
@@ -221,8 +225,10 @@ describe("update", function () {
   });
 
   test("bad request with no data", async function () {
+    const jobId = (await db.query(`SELECT id FROM jobs 
+                              WHERE title = 'computer programmer'`)).rows[0].id;
     try {
-      await Job.update(1, {});
+      await Job.update(jobId, {});
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
