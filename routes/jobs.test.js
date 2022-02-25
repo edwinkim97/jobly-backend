@@ -182,7 +182,7 @@ describe("GET /jobs/:id", function () {
   });
 });
 
-/************************************** PATCH /jobs/:handle */
+/************************************** PATCH /jobs/:id */
 
 describe("PATCH /jobs/:handle", function () {
   test("works for admins", async function () {
@@ -260,26 +260,32 @@ describe("PATCH /jobs/:handle", function () {
   });
 });
 
-/************************************** DELETE /jobs/:handle */
+/************************************** DELETE /jobs/:id */
 
-describe("DELETE /jobs/:handle", function () {
+describe("DELETE /jobs/:id", function () {
   test("works for admins", async function () {
+    const jobId = (await db.query(`SELECT id FROM jobs 
+                              WHERE title = 'j1'`)).rows[0].id;
     const resp = await request(app)
-      .delete(`/jobs/c1`)
+      .delete(`/jobs/${jobId}`)
       .set("authorization", `Bearer ${admin1Token}`);
-    expect(resp.body).toEqual({ deleted: "c1" });
+    expect(resp.body).toEqual({ deleted: jobId });
   });
 
   test("unauth for non-admins", async function () {
+    const jobId = (await db.query(`SELECT id FROM jobs 
+                              WHERE title = 'j1'`)).rows[0].id;
     const resp = await request(app)
-      .delete(`/jobs/c1`)
+      .delete(`/jobs/${jobId}`)
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
+    const jobId = (await db.query(`SELECT id FROM jobs 
+                              WHERE title = 'j1'`)).rows[0].id;
     const resp = await request(app)
-      .delete(`/jobs/c1`);
+      .delete(`/jobs/${jobId}`);
     expect(resp.statusCode).toEqual(401);
   });
 
