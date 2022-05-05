@@ -4,7 +4,7 @@
 
 This is the Express backend for Jobly deployed with Heroku.
 
-## [Live Demo]()
+## [Live Demo](https://edwinkim-demo-jobly.surge.sh/)
 
 # Getting Started on the Development Server
 
