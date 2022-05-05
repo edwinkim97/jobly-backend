@@ -35,7 +35,7 @@ This is the Express backend for Jobly deployed with Heroku.
 #### To test a specific folder:
 
 Method 1:
-1. `npm test (name_of_test_file)`
+1. `npm test {name_of_test_file}`
 
 Method 2:
 1. `cd {specific_folder}`
