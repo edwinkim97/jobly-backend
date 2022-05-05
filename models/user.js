@@ -116,12 +116,12 @@ class User {
   }
 
   /** Given a username, return data about user.
-   *
-   * Returns { username, first_name, last_name, is_admin, jobs }
-   *   where jobs is { id, title, company_handle, company_name, state }
-   *
-   * Throws NotFoundError if user not found.
-   **/
+    *
+    * Returns { username, first_name, last_name, is_admin, jobs }
+    *   where jobs is { id, title, company_handle, company_name, state }
+    *
+    * Throws NotFoundError if user not found.
+    **/
 
   static async get(username) {
     const userRes = await db.query(
@@ -139,6 +139,12 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
+    const userApplicationsRes = await db.query(
+      `SELECT a.job_id
+           FROM applications AS a
+           WHERE a.username = $1`, [username]);
+
+    user.applications = userApplicationsRes.rows.map(a => a.job_id);
     return user;
   }
 
@@ -156,7 +162,7 @@ class User {
    *
    * WARNING: this function can set a new password or make a user an admin.
    * Callers of this function must be certain they have validated inputs to this
-   * or a serious security risks are opened.
+   * or serious security risks are opened.
    */
 
   static async update(username, data) {
